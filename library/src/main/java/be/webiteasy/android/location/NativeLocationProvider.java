@@ -21,7 +21,7 @@ public class NativeLocationProvider extends BaseLocationProvider implements Pass
     LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            //Log.e("EasyLocation","NativeLocationProvider#LocationListner#onLocationChanged("+location+")");
+            Log.i("EasyLocation","NativeLocationProvider.LocationListner#onLocationChanged("+location+")");
 
             setLocation(location);
 
@@ -38,7 +38,7 @@ public class NativeLocationProvider extends BaseLocationProvider implements Pass
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            //Log.e("EasyLocation","NativeLocationProvider#LocationListner#onstatusChanged("+provider+", "+status+")");
+            Log.i("EasyLocation","NativeLocationProvider.LocationListner#onstatusChanged("+provider+", "+status+")");
 
             if (status == LocationProvider.OUT_OF_SERVICE || status == LocationProvider.TEMPORARILY_UNAVAILABLE)
                 setState(STATE_ERROR);
@@ -48,13 +48,13 @@ public class NativeLocationProvider extends BaseLocationProvider implements Pass
 
         @Override
         public void onProviderEnabled(String provider) {
-            //Log.e("EasyLocation","NativeLocationProvider#LocationListner#onProviderEnabled");
+            Log.i("EasyLocation","NativeLocationProvider.LocationListner#onProviderEnabled");
 
         }
 
         @Override
         public void onProviderDisabled(String provider) {
-            //Log.e("EasyLocation","NativeLocationProvider#LocationListner#onProviderDisabled()");
+            Log.i("EasyLocation","NativeLocationProvider.LocationListner#onProviderDisabled()");
         }
     };
 
@@ -84,10 +84,15 @@ public class NativeLocationProvider extends BaseLocationProvider implements Pass
 
         try {
             mLocationManager.removeUpdates(mLocationListener);
-            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 2, mLocationListener);
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 2, mLocationListener);
+
+            Log.i("EasyLocation", "NativeLocationProvider#requireUpdate() started");
+
             setState(STATE_STARTED);
             mUpdateRequired = true;
         } catch (SecurityException e) {
+            Log.e("EasyLocation", "NativeLocationProvider#requireUpdate() error : "+e);
+
             setState(STATE_ERROR);
         }
     }
@@ -104,6 +109,8 @@ public class NativeLocationProvider extends BaseLocationProvider implements Pass
 
     @Override
     public void start() {
+        Log.i("EasyLocation", "NativeLocationProvider#start()");
+
         if (getState() == STATE_STARTED)
             return;
 
@@ -121,9 +128,13 @@ public class NativeLocationProvider extends BaseLocationProvider implements Pass
             mLocationManager.removeUpdates(mLocationListener);
             mLocationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0, mLocationListener);
 
+            Log.i("EasyLocation", "NativeLocationProvider#start() started");
+
             setState(STATE_STARTED);
             setLocation(l);
         } catch (SecurityException e) {
+            Log.e("EasyLocation", "NativeLocationProvider#start() error " + e);
+
             setState(STATE_ERROR);
         }
     }
