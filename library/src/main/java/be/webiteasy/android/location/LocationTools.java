@@ -1,10 +1,15 @@
 package be.webiteasy.android.location;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
+import android.os.Process;
+import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
 public class LocationTools {
@@ -66,5 +71,35 @@ public class LocationTools {
     public static boolean checkPermissions(Context context) {
         return ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    static boolean hasActivityCompat() {
+        try {
+            Class.forName("android.support.v4.app.ActivityCompat");
+            return true;
+        } catch (ClassNotFoundException ex) {
+            return false;
+        }
+    }
+
+
+    public static int checkSelfPermission(@NonNull Context context, @NonNull String permission) {
+        if (permission == null) {
+            throw new IllegalArgumentException("permission is null");
+        }
+
+        return context.checkPermission(permission, android.os.Process.myPid(), Process.myUid());
+    }
+
+    public static void requestPermissions(final @NonNull Activity activity,
+                                          final @NonNull String[] permissions, final @IntRange(from = 0) int requestCode) {
+
+        if (hasActivityCompat()) {
+            ActivityCompat.requestPermissions(activity, permissions, requestCode);
+        } else {
+            if (Build.VERSION.SDK_INT >= 23) {
+                activity.requestPermissions(permissions, requestCode);
+            }
+        }
     }
 }
