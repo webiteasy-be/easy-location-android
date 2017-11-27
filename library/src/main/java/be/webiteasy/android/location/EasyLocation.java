@@ -356,7 +356,7 @@ public class EasyLocation {
         Location location = new Location(els[1]);
         location.setTime(Long.valueOf(els[2]));
         location.setLatitude(Double.valueOf(els[3]));
-        location.setLatitude(Double.valueOf(els[4]));
+        location.setLongitude(Double.valueOf(els[4]));
         location.setAccuracy(Float.valueOf(els[5]));
         location.setAltitude(Double.valueOf(els[6]));
         location.setSpeed(Float.valueOf(els[7]));
