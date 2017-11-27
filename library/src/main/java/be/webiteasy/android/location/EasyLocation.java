@@ -53,6 +53,10 @@ public class EasyLocation {
         }
     }
 
+    public static boolean isInit() {
+        return instance != null;
+    }
+
     private EasyLocation(Context context) {
         handlerInstance = new LocationHandler(context);
         handlerInstance.addLocationListener(new LocationHandler.Listener() {
@@ -106,6 +110,13 @@ public class EasyLocation {
         if (hasEventBus()) {
             org.greenrobot.eventbus.EventBus.getDefault().post(new NewVirtualLocationEvent(location));
         }
+    }
+
+    public static boolean hasVirtualLocation() {
+        if (instance == null)
+            throw new IllegalStateException("EasyLocation must be implemented");
+
+        return instance.mVirtualLocation != null;
     }
 
     /**
