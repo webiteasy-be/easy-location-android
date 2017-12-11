@@ -320,7 +320,7 @@ public class EasyLocation {
     private void updateLocation(Location location){
         mLastLocation = location;
 
-        mPreferences.edit().putString(PREFERENCES_VIRTUAL_LOCATION, serializeLocation(location)).apply();
+        mPreferences.edit().putString(PREFERENCES_LAST_LOCATION, serializeLocation(location)).apply();
 
         synchronized (mUpdateCallbacksLock) {
             for (WeakReference<Callback> callbackR : mUpdateCallbacks) {
